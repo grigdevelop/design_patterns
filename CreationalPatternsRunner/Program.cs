@@ -1,4 +1,5 @@
 ﻿using System;
+using CreationalPatterns.Builder;
 using CreationalPatterns.Prototype;
 using CreationalPatterns.Singleton;
 
@@ -12,6 +13,23 @@ namespace CreationalPatternsRunner
             //RunPrototype();
 
             Console.Read();
+        }
+
+        private static void RunBuilder()
+        {
+            Console.WriteLine("***Builder Pattern Demo***");
+            Director director = new Director();
+            IBuilder b1 = new Car("Ford");
+            IBuilder b2 = new MotorCycle("Honda");
+            // Making Car
+            director.Construct(b1);
+            Product p1 = b1.GetVehicle();
+            p1.Show();
+            //Making MotorCycle
+            director.Construct(b2);
+            Product p2 = b2.GetVehicle();
+            p2.Show();
+            Console.ReadLine();
         }
 
         private static void RunPrototype()

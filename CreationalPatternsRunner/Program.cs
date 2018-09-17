@@ -1,8 +1,7 @@
-﻿using System;
-using CreationalPatterns.Builder;
-using CreationalPatterns.Prototype;
-using CreationalPatterns.Singleton;
-using CreationalPatterns.StructuralPatterns.ProxyPattern;
+﻿using CreationalPatterns;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace CreationalPatternsRunner
 {
@@ -10,74 +9,29 @@ namespace CreationalPatternsRunner
     {
         static void Main(string[] args)
         {
-            //RunSingleton();
-            //RunPrototype();
-            RunProxy();
+            ConfigureRunners();
             Console.Read();
         }
 
-        private static void RunProxy()
+        static void ConfigureRunners()
         {
-            Proxy proxy = new Proxy();
-            proxy.DoSomeWork();
-        }
-
-        private static void RunBuilder()
-        {
-            Console.WriteLine("***Builder Pattern Demo***");
-            Director director = new Director();
-            IBuilder b1 = new Car("Ford");
-            IBuilder b2 = new MotorCycle("Honda");
-            // Making Car
-            director.Construct(b1);
-            Product p1 = b1.GetVehicle();
-            p1.Show();
-            //Making MotorCycle
-            director.Construct(b2);
-            Product p2 = b2.GetVehicle();
-            p2.Show();
-            Console.ReadLine();
-        }
-
-        private static void RunPrototype()
-        {
-            Console.WriteLine("***Prototype Pattern Demo***\n");
-
-            //Base or Original Copy
-            BasicCar nano_base = new Nano("Green Nano") { Price = 100000 };
-            BasicCar ford_base = new Ford("Ford Yellow") { Price = 500000 };
-
-            // Nano
-            BasicCar bc1;
-            bc1 = nano_base.Clone();
-            bc1.Price = nano_base.Price + BasicCar.SetPrice();
-
-            // Ford
-            bc1 = ford_base.Clone();
-            bc1.Price = ford_base.Price + BasicCar.SetPrice();
-            Console.WriteLine("Car is: {0}, and it's price is Rs. {1}",
-                bc1.ModelName, bc1.Price);
-            Console.ReadLine();
-
-        }
-
-        private static void RunSingleton()
-        {
-            Console.WriteLine("***Singleton Pattern Demo***\n");
-            //Console.WriteLine(Singleton.MyInt);
-            // Private Constructor.So,we cannot use 'new' keyword.
-            Console.WriteLine("Trying to create instance s1.");
-            Singleton s1 = Singleton.Instance;
-            Console.WriteLine("Trying to create instance s2.");
-            Singleton s2 = Singleton.Instance;
-            if (s1 == s2)
+            var interfaces = typeof(IRunner).Assembly.GetTypes().Where(x => x.GetInterfaces().Any(i => i == typeof(IRunner)))
+                .ToList();
+            interfaces.ForEach(r =>
             {
-                Console.WriteLine("Only one instance exists.");
-            }
-            else
-            {
-                Console.WriteLine("Different instances exist.");
-            }
+                var runnerAttr = r.GetCustomAttribute<RunnerAttribute>();
+                if (runnerAttr != null && runnerAttr.Ignore)
+                {
+                    // do something
+                }
+                else
+                {
+                    var instance = Activator.CreateInstance(r) as IRunner;
+                    instance?.Run();
+                }
+
+            });
         }
+
     }
 }

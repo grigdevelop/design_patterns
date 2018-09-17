@@ -4,12 +4,12 @@ using System.Text;
 
 namespace CreationalPatterns.StructuralPatterns.DecoratorPattern
 {
-    public abstract class Component
+    abstract class Component
     {
         public abstract void MakeHouse();
     }
 
-    public class ConcreteComponent : Component
+    class ConcreteComponent : Component
     {
         public override void MakeHouse()
         {
@@ -17,16 +17,16 @@ namespace CreationalPatterns.StructuralPatterns.DecoratorPattern
         }
     }
 
-    public abstract class AbstractDecorator : Component
+    abstract class AbstractDecorator : Component
     {
         private Component com;
-       
+
         public void SetTheComponent(Component c)
         {
             this.com = c;
         }
 
-        protected AbstractDecorator()
+        public override void MakeHouse()
         {
             if (com != null)
             {
@@ -34,5 +34,37 @@ namespace CreationalPatterns.StructuralPatterns.DecoratorPattern
             }
         }
 
+    }
+
+    class ConcreteDecoratorEx1 : AbstractDecorator
+    {
+        public override void MakeHouse()
+        {
+            base.MakeHouse();
+            Console.WriteLine("***Using a decorator***");
+            AddFloor();
+        }
+
+        private void AddFloor()
+        {
+            Console.WriteLine("I'm adding additional floor at this house.");
+        }
+    }
+
+    class ConcreteDecoratorEx2 : AbstractDecorator
+    {
+        public override void MakeHouse()
+        {
+            Console.WriteLine("");
+            base.MakeHouse();
+            Console.WriteLine("***Using another decorator***");
+            //Decorating now.
+            PaintTheHouse();
+            //You can add additional stuffs as per your need
+        }
+        private void PaintTheHouse()
+        {
+            Console.WriteLine("Now I am painting the house.");
+        }
     }
 }

@@ -2,6 +2,7 @@
 using CreationalPatterns.Builder;
 using CreationalPatterns.Prototype;
 using CreationalPatterns.Singleton;
+using CreationalPatterns.StructuralPatterns.ProxyPattern;
 
 namespace CreationalPatternsRunner
 {
@@ -11,8 +12,14 @@ namespace CreationalPatternsRunner
         {
             //RunSingleton();
             //RunPrototype();
-
+            RunProxy();
             Console.Read();
+        }
+
+        private static void RunProxy()
+        {
+            Proxy proxy = new Proxy();
+            proxy.DoSomeWork();
         }
 
         private static void RunBuilder()
